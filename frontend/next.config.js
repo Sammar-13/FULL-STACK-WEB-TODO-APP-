@@ -31,7 +31,7 @@ const nextConfig = {
     return [
       {
         source: '/dashboard',
-        destination: '/dashboard/todos',
+        destination: '/tasks',
         permanent: false,
       }
     ]
