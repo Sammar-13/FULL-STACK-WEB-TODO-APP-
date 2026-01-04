@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTask } from "@/hooks/useTask";
+import { TaskStatus } from "@/types";
 import TaskList from "@/components/Tasks/TaskList";
 import TaskForm from "@/components/Tasks/TaskForm";
 import TaskFilter from "@/components/Tasks/TaskFilter";
@@ -20,8 +21,8 @@ export default function DashboardPage() {
     }
   };
 
-  const pendingCount = tasks.filter((t) => t.status === "pending").length;
-  const completedCount = tasks.filter((t) => t.status === "completed").length;
+  const pendingCount = tasks.filter((t) => t.status === TaskStatus.PENDING).length;
+  const completedCount = tasks.filter((t) => t.status === TaskStatus.COMPLETED).length;
 
   return (
     <div>
