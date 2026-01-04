@@ -51,6 +51,7 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json",  # ← Changed: OpenAPI schema at both /openapi.json and /api/openapi.json
         redoc_url="/redoc",  # ← Changed: ReDoc at both /redoc and /api/redoc
         lifespan=lifespan,
+       
     )
 
     # Database error handler
@@ -112,6 +113,7 @@ def create_app() -> FastAPI:
             "redoc": "/redoc",
         }
 
+
     # Add rate limiting middleware
     @app.middleware("http")
     async def rate_limit_wrapper(request: Request, call_next):
@@ -144,14 +146,12 @@ def create_app() -> FastAPI:
         return response
 
     # Configure middleware (order matters - add from last to first)
-    # CORS (last in middleware chain, so second to last added here?)
-    # Wait, add_middleware adds to top.
-    # We want GZIP to be OUTERMOST (Top).
-    # So we add it LAST.
-    # We want CORS to be INSIDE GZIP.
-    # So we add it BEFORE GZIP.
+    # The middleware added LAST is executed FIRST (outermost).
 
-    # CORS
+    # 1. GZip (Inner)
+    app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+    # 2. CORS (Outer - handles Preflight OPTIONS first)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_list,
@@ -160,9 +160,6 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
         expose_headers=["*"],
     )
-
-    # GZIP compression (last added -> first executed)
-    app.add_middleware(GZipMiddleware, minimum_size=1000)
 
     return app
 
