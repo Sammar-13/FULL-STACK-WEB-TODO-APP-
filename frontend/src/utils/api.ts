@@ -21,7 +21,7 @@ class APIClient {
     this.baseURL = baseURL
   }
 
-  private getHeaders(options?: FetchOptions): HeadersInit {
+  private getHeaders(): HeadersInit {
     return {
       'Content-Type': 'application/json',
     }
@@ -59,7 +59,7 @@ class APIClient {
     const url = `${this.baseURL}${endpoint}`
     const fetchOptions: RequestInit = {
       ...options,
-      headers: this.getHeaders(options),
+      headers: this.getHeaders(),
       credentials: 'include', // CRITICAL: Send cookies with every request
       signal: AbortSignal.timeout(30000), // 30 second timeout
     }
@@ -72,7 +72,7 @@ class APIClient {
         try {
           await this.refreshAccessToken()
           // Retry the original request with new token (in cookie)
-          fetchOptions.headers = this.getHeaders(options)
+          fetchOptions.headers = this.getHeaders()
           const retryResponse = await fetch(url, fetchOptions)
 
           if (!retryResponse.ok) {
@@ -164,7 +164,7 @@ class APIClient {
 
   // Tokens are now stored in HTTP-only cookies set by the backend
   // These methods are deprecated but kept for compatibility
-  setToken(accessToken: string, refreshToken: string): void {
+  setToken(): void {
     // Tokens are set by backend in HTTP-only cookies
     // This method is kept for compatibility but does nothing
   }

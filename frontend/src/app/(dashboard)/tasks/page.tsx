@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTask } from "@/hooks/useTask";
 import { useAuth } from "@/hooks/useAuth";
 import TaskList from "@/components/Tasks/TaskList";
@@ -10,7 +10,7 @@ import Modal from "@/components/Common/Modal";
 
 export default function TasksPage() {
   const { user } = useAuth();
-  const { tasks, isLoading, createTask, loadTasks } = useTask();
+  const { tasks, isLoading, createTask } = useTask();
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

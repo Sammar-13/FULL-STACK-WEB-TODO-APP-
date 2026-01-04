@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.gzip import GZIPMiddleware
+from starlette.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import OperationalError
 
@@ -88,23 +88,6 @@ def create_app() -> FastAPI:
             )
         raise
 
-    # Configure middleware (order matters - add from last to first)
-    # Rate limiting (checked first)
-    app.add_middleware(rate_limit_middleware)
-
-    # GZIP compression
-    app.add_middleware(GZIPMiddleware, minimum_size=1000)
-
-    # CORS (last in middleware chain)
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.cors_origins_list,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["*"],
-    )
-
     # Include API routes with /api prefix
     app.include_router(health_router, prefix="/api")
     app.include_router(auth_router, prefix="/api")
@@ -128,6 +111,12 @@ def create_app() -> FastAPI:
             "openapi": "/openapi.json",
             "redoc": "/redoc",
         }
+
+    # Add rate limiting middleware
+    @app.middleware("http")
+    async def rate_limit_wrapper(request: Request, call_next):
+        """Rate limiting middleware wrapper."""
+        return await rate_limit_middleware(request, call_next)
 
     # Add Cache-Control headers middleware
     @app.middleware("http")
@@ -153,6 +142,27 @@ def create_app() -> FastAPI:
             response.headers["Expires"] = "0"
 
         return response
+
+    # Configure middleware (order matters - add from last to first)
+    # CORS (last in middleware chain, so second to last added here?)
+    # Wait, add_middleware adds to top.
+    # We want GZIP to be OUTERMOST (Top).
+    # So we add it LAST.
+    # We want CORS to be INSIDE GZIP.
+    # So we add it BEFORE GZIP.
+
+    # CORS
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins_list,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+    )
+
+    # GZIP compression (last added -> first executed)
+    app.add_middleware(GZipMiddleware, minimum_size=1000)
 
     return app
 

@@ -7,9 +7,9 @@
 'use client'
 
 import { useContext } from 'react'
-import { TaskContext } from '@/context/TaskContext'
+import { TaskContext, TaskContextType } from '@/context/TaskContext'
 
-export function useTask() {
+export function useTask(): TaskContextType {
   const context = useContext(TaskContext)
 
   if (!context) {

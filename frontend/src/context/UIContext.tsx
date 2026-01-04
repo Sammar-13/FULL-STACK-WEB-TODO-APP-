@@ -9,7 +9,7 @@
 import React, { createContext, useCallback, useState, useEffect } from 'react'
 import { UIState, Toast } from '@/types'
 
-interface UIContextType extends UIState {
+export interface UIContextType extends UIState {
   toggleTheme: () => void
   setTheme: (theme: 'light' | 'dark') => void
   toggleSidebar: () => void

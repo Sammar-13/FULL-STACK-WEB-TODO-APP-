@@ -6,9 +6,9 @@
 'use client'
 
 import { useContext } from 'react'
-import { UIContext } from '@/context/UIContext'
+import { UIContext, UIContextType } from '@/context/UIContext'
 
-export function useUI() {
+export function useUI(): UIContextType {
   const context = useContext(UIContext)
 
   if (!context) {

@@ -20,7 +20,7 @@ import {
   ApiError,
 } from '@/types'
 
-interface TaskContextType extends TaskState {
+export interface TaskContextType extends TaskState {
   createTask: (data: CreateTaskInput) => Promise<Task>
   updateTask: (id: string, data: UpdateTaskInput) => Promise<Task>
   deleteTask: (id: string) => Promise<void>

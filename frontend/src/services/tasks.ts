@@ -11,6 +11,7 @@ import {
   CreateTaskInput,
   UpdateTaskInput,
   TaskFilterOptions,
+  TaskStatus,
 } from '@/types'
 
 class TasksService {
@@ -107,7 +108,7 @@ class TasksService {
    */
   async completeTask(id: string): Promise<Task> {
     return this.updateTask(id, {
-      status: 'completed',
+      status: TaskStatus.COMPLETED,
       completed_at: new Date().toISOString(),
     })
   }
@@ -117,7 +118,7 @@ class TasksService {
    */
   async uncompleteTask(id: string): Promise<Task> {
     return this.updateTask(id, {
-      status: 'pending',
+      status: TaskStatus.PENDING,
       completed_at: undefined,
     })
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Task } from "@/types";
+import { Task, TaskStatus } from "@/types";
 import Link from "next/link";
 import { useTask } from "@/hooks/useTask";
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function TaskCard({ task }: TaskCardProps) {
   const handleToggleComplete = async () => {
     try {
       await updateTask(task.id, {
-        status: task.status === "pending" ? "completed" : "pending",
+        status: task.status === TaskStatus.PENDING ? TaskStatus.COMPLETED : TaskStatus.PENDING,
       });
     } catch (error) {
       console.error("Failed to update task:", error);
@@ -48,7 +48,7 @@ export default function TaskCard({ task }: TaskCardProps) {
             <div className="pt-1">
               <input
                 type="checkbox"
-                checked={task.status === "completed"}
+                checked={task.status === TaskStatus.COMPLETED}
                 onChange={handleToggleComplete}
                 className="w-5 h-5 rounded-md border-slate-600 bg-slate-700 text-indigo-500 focus:ring-indigo-500/50 focus:ring-offset-0 cursor-pointer transition-all"
               />
@@ -58,7 +58,7 @@ export default function TaskCard({ task }: TaskCardProps) {
               <Link
                 href={`/tasks/${task.id}`}
                 className={`text-lg font-semibold block mb-1 transition-colors ${
-                  task.status === "completed"
+                  task.status === TaskStatus.COMPLETED
                     ? "text-slate-500 line-through decoration-slate-600"
                     : "text-slate-100 hover:text-indigo-400"
                 }`}
@@ -68,7 +68,7 @@ export default function TaskCard({ task }: TaskCardProps) {
 
               {task.description && (
                 <p className={`text-sm mb-3 line-clamp-2 ${
-                  task.status === "completed" ? "text-slate-600" : "text-slate-400"
+                  task.status === TaskStatus.COMPLETED ? "text-slate-600" : "text-slate-400"
                 }`}>
                   {task.description}
                 </p>

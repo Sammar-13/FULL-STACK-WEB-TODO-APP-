@@ -31,7 +31,7 @@ export function formatTime(date: Date | string): string {
     return d.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
-      meridiem: 'short',
+      hour12: true,
     })
   } catch {
     return ''
@@ -44,13 +44,13 @@ export function formatTime(date: Date | string): string {
 export function formatDateTime(date: Date | string): string {
   try {
     const d = typeof date === 'string' ? new Date(date) : date
-    return d.toLocaleDateString('en-US', {
+    return d.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
-      meridiem: 'short',
+      hour12: true,
     })
   } catch {
     return ''
@@ -86,9 +86,6 @@ export function formatStatus(status: TaskStatus | string): string {
     [TaskStatus.PENDING]: 'Pending',
     [TaskStatus.COMPLETED]: 'Completed',
     [TaskStatus.ARCHIVED]: 'Archived',
-    pending: 'Pending',
-    completed: 'Completed',
-    archived: 'Archived',
   }
 
   return statusMap[status] || status
@@ -102,9 +99,6 @@ export function formatPriority(priority: TaskPriority | string): string {
     [TaskPriority.LOW]: 'Low',
     [TaskPriority.MEDIUM]: 'Medium',
     [TaskPriority.HIGH]: 'High',
-    low: 'Low',
-    medium: 'Medium',
-    high: 'High',
   }
 
   return priorityMap[priority] || priority
@@ -118,9 +112,6 @@ export function getPriorityBadgeClass(priority: TaskPriority | string): string {
     [TaskPriority.LOW]: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     [TaskPriority.MEDIUM]: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
     [TaskPriority.HIGH]: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-    low: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-    high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   }
 
   return classMap[priority] || classMap[TaskPriority.MEDIUM]
@@ -134,9 +125,6 @@ export function getStatusBadgeClass(status: TaskStatus | string): string {
     [TaskStatus.PENDING]: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
     [TaskStatus.COMPLETED]: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     [TaskStatus.ARCHIVED]: 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-200',
-    pending: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
-    completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    archived: 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-200',
   }
 
   return classMap[status] || classMap[TaskStatus.PENDING]

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -21,14 +21,10 @@ export default function ConfirmationModal({
   confirmText = "Confirm",
   cancelText = "Cancel",
 }: ConfirmationModalProps) {
-  const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     if (isOpen) {
-      setIsVisible(true);
       document.body.style.overflow = "hidden";
     } else {
-      setIsVisible(false);
       document.body.style.overflow = "unset";
     }
     return () => {

@@ -8,10 +8,10 @@
 
 import React, { createContext, useCallback, useEffect, useState } from 'react'
 import authService from '@/services/auth'
-import { AuthState, User, LoginInput, SignUpInput, ApiError } from '@/types'
+import { AuthState, LoginInput, SignUpInput, ApiError } from '@/types'
 import apiClient from '@/utils/api'
 
-interface AuthContextType extends AuthState {
+export interface AuthContextType extends AuthState {
   signup: (data: SignUpInput) => Promise<void>
   login: (data: LoginInput) => Promise<void>
   logout: () => Promise<void>
@@ -43,7 +43,6 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [state, setState] = useState<AuthState>(defaultAuthState)
-  const [refreshAttempted, setRefreshAttempted] = useState(false)
 
   /**
    * Initialize authentication on mount by verifying session
@@ -69,8 +68,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
       } catch (error) {
         setState((prev) => ({ ...prev, isLoading: false }))
-      } finally {
-        setRefreshAttempted(true)
       }
     }
 

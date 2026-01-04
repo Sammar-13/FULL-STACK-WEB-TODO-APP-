@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTask } from "@/hooks/useTask";
 import TaskList from "@/components/Tasks/TaskList";
 import TaskForm from "@/components/Tasks/TaskForm";
