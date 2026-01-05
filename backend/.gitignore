@@ -57,3 +57,5 @@ logs/
 
 # Alembic
 alembic/versions/
+
+.vercel
