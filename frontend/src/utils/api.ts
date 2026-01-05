@@ -6,7 +6,7 @@
 
 import { ApiError, TokenResponse } from '@/types'
 
-const API_URL = `${process.env.NEXT_API_URL || 'https://backend-eme6ufk5z-sammar-abbas-projects-60c556c4.vercel.app'}/api`
+const API_URL = `${process.env.NEXT_API_URL || 'https://backend01-mu.vercel.app'}/api`
 
 interface FetchOptions extends RequestInit {
   skipAuth?: boolean

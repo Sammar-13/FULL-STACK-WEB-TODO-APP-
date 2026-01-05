@@ -37,7 +37,7 @@ const nextConfig = {
     ]
   },
   env: {
-    NEXT_API_URL: process.env.NEXT_API_URL || 'https://backend-eme6ufk5z-sammar-abbas-projects-60c556c4.vercel.app',
+    NEXT_API_URL: process.env.NEXT_API_URL || 'https://backend01-mu.vercel.app',
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'Todo App',
   },
 }
