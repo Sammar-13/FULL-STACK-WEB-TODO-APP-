@@ -4,13 +4,14 @@ from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID
 
-from sqlmodel import Session, select
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from ..db.models import User
 from ..security import hash_password, verify_password
 
 
-def get_user_by_id(session: Session, user_id: UUID) -> Optional[User]:
+async def get_user_by_id(session: AsyncSession, user_id: UUID) -> Optional[User]:
     """Retrieve user by ID (Task 02-030).
 
     Args:
@@ -23,10 +24,10 @@ def get_user_by_id(session: Session, user_id: UUID) -> Optional[User]:
     if not user_id:
         return None
 
-    return session.get(User, user_id)
+    return await session.get(User, user_id)
 
 
-def get_user_by_email(session: Session, email: str) -> Optional[User]:
+async def get_user_by_email(session: AsyncSession, email: str) -> Optional[User]:
     """Retrieve user by email (Task 02-030).
 
     Args:
@@ -40,11 +41,12 @@ def get_user_by_email(session: Session, email: str) -> Optional[User]:
         return None
 
     statement = select(User).where(User.email == email)
-    return session.exec(statement).first()
+    result = await session.execute(statement)
+    return result.scalars().first()
 
 
-def update_user(
-    session: Session,
+async def update_user(
+    session: AsyncSession,
     user_id: UUID,
     updates: dict,
 ) -> Optional[User]:
@@ -61,7 +63,7 @@ def update_user(
     Raises:
         ValueError: If updates are invalid
     """
-    user = get_user_by_id(session, user_id)
+    user = await get_user_by_id(session, user_id)
     if not user:
         return None
 
@@ -75,17 +77,17 @@ def update_user(
             setattr(user, field, value)
 
     # Update the updated_at timestamp
-    user.updated_at = datetime.now(timezone.utc)
+    user.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
     session.add(user)
-    session.commit()
-    session.refresh(user)
+    await session.commit()
+    await session.refresh(user)
 
     return user
 
 
-def change_password(
-    session: Session,
+async def change_password(
+    session: AsyncSession,
     user_id: UUID,
     old_password: str,
     new_password: str,
@@ -113,7 +115,7 @@ def change_password(
     if new_password == old_password:
         raise ValueError("New password must be different from old password")
 
-    user = get_user_by_id(session, user_id)
+    user = await get_user_by_id(session, user_id)
     if not user:
         raise ValueError("User not found")
 
@@ -123,10 +125,10 @@ def change_password(
 
     # Hash and set new password
     user.password_hash = hash_password(new_password)
-    user.updated_at = datetime.now(timezone.utc)
+    user.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
     session.add(user)
-    session.commit()
-    session.refresh(user)
+    await session.commit()
+    await session.refresh(user)
 
     return True

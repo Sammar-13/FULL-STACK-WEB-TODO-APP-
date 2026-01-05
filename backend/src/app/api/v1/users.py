@@ -1,7 +1,7 @@
 """User management API routes (Tasks 02-040, 02-041)."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from ...database import get_session
 from ...db.models import User
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/profile", response_model=UserProfile)
-def get_user_profile(
+async def get_user_profile(
     current_user: User = Depends(get_current_user),
 ) -> UserProfile:
     """Get current user's profile (Task 02-040).
@@ -28,10 +28,10 @@ def get_user_profile(
 
 
 @router.patch("/profile", response_model=UserProfile)
-def update_user_profile(
+async def update_user_profile(
     request: UserUpdate,
     current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> UserProfile:
     """Update current user's profile (Task 02-040).
 
@@ -59,7 +59,7 @@ def update_user_profile(
             return UserProfile.model_validate(current_user)
 
         # Update user
-        updated_user = update_user(session, current_user.id, updates)
+        updated_user = await update_user(session, current_user.id, updates)
         if not updated_user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -75,10 +75,10 @@ def update_user_profile(
 
 
 @router.put("/password", response_model=dict)
-def change_user_password(
+async def change_user_password(
     request: dict,
     current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> dict:
     """Change user password (Task 02-041).
 
@@ -103,7 +103,7 @@ def change_user_password(
         )
 
     try:
-        success = change_password(
+        success = await change_password(
             session,
             current_user.id,
             old_password,
@@ -123,8 +123,11 @@ def change_user_password(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_msg,
         ) from e
-
-    raise HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail="Failed to change password",
-    )
+    except Exception as e:
+        import traceback
+        print(f"[ERROR] Change password failed: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to change password",
+        )
