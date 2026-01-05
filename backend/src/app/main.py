@@ -109,6 +109,25 @@ def create_app() -> FastAPI:
         )
 
 
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        """Global exception handler to catch any unhandled errors."""
+        import traceback
+        error_str = str(exc)
+        traceback_str = traceback.format_exc()
+        
+        # Log the full traceback
+        logger.error(f"Unhandled exception: {error_str}\n{traceback_str}")
+        
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "detail": f"Internal Server Error: {error_str}",
+                "error_code": "INTERNAL_ERROR",
+                "type": type(exc).__name__
+            },
+        )
+
     # Include API routes with /api prefix
     app.include_router(health_router, prefix="/api")
     app.include_router(auth_router, prefix="/api")
