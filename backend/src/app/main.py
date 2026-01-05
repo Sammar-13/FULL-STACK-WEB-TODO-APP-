@@ -27,15 +27,20 @@ async def lifespan(app: FastAPI):
     Handles startup and shutdown events.
     Note: On Vercel serverless, lifespan events may not be reliable.
     """
+    import asyncio
+    
     # Startup
     logger.info("Starting up application...")
     try:
-        await create_db_and_tables()
+        # Try to create tables, but give up after 5 seconds so app can start
+        # The database might be waking up (Neon cold start takes ~3-5s)
+        await asyncio.wait_for(create_db_and_tables(), timeout=5.0)
         logger.info("Database tables created/verified")
-    except RuntimeError as e:
-        # On Vercel serverless, this may fail during cold start
-        # The app will still be available for requests, but DB operations may fail
-        logger.warning(f"Database initialization failed (expected on cold start): {e}")
+    except asyncio.TimeoutError:
+         logger.warning("Database table creation timed out (continuing startup). Tables will be created on next run.")
+    except Exception as e:
+        # Catch ALL errors so the app never crashes during startup
+        logger.warning(f"Database initialization failed (safe to ignore on cold start): {e}")
 
     yield
 
