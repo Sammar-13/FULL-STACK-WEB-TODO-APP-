@@ -29,14 +29,19 @@ export default function LoginPage() {
         password: formData.password,
       });
       router.push("/tasks");
-    } catch (err) {
-      let errorMessage = "Login failed";
-      if (err instanceof Error) {
+    } catch (err: any) {
+      let errorMessage = "Login failed. Please try again.";
+      
+      // Check for specific API Error structure
+      if (err?.status === 401 || err?.code === 'UNAUTHORIZED') {
+        errorMessage = "Invalid email or password.";
+      } else if (err instanceof Error) {
+        // Use the message from the backend if available
         errorMessage = err.message;
-      } else if (typeof err === "object" && err !== null) {
-        const errObj = err as any;
-        errorMessage = errObj.message || errObj.detail || JSON.stringify(err);
+      } else if (err?.detail) {
+        errorMessage = err.detail;
       }
+      
       setError(errorMessage);
     }
   };
