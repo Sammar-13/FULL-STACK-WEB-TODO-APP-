@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['localhost', 'api.example.com', 'backend-pi-six-38.vercel.app'],
+    domains: ['localhost', 'api.example.com', 'sammar20-todo-backend.hf.space'],
     formats: ['image/avif', 'image/webp'],
   },
   headers: async () => {
@@ -37,7 +37,7 @@ const nextConfig = {
     ]
   },
   env: {
-    NEXT_API_URL: process.env.NEXT_API_URL || 'https://backend01-mu.vercel.app',
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sammar20-todo-backend.hf.space',
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'Todo App',
   },
 }

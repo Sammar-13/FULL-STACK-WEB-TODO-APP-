@@ -183,14 +183,8 @@ def create_app() -> FastAPI:
     # Root endpoint
     @app.get("/")
     def root() -> dict:
-        """API root endpoint with documentation links."""
-        return {
-            "message": "Hackathon Todo API",
-            "version": "0.2.0",
-            "docs": "/docs",
-            "openapi": "/openapi.json",
-            "redoc": "/redoc",
-        }
+        """API root endpoint."""
+        return {"status": "Backend running on Vercel"}
 
 
     # Add rate limiting middleware

@@ -34,8 +34,10 @@ class Settings(BaseSettings):
     )
 
     # Database
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost/hackathon_todo"
-    """PostgreSQL connection URL in format: postgresql://user:password@host:port/dbname"""
+    # Use os.getenv to avoid hardcoded defaults in production
+    # Fallback to sqlite memory for testing/builds if not set
+    DATABASE_URL: str = "sqlite+aiosqlite:///:memory:" 
+
 
     # JWT Configuration
     JWT_SECRET_KEY: str = "dev-secret-key-for-testing-only-minimum-32-chars-long"

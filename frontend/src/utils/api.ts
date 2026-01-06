@@ -6,7 +6,7 @@
 
 import { ApiError, TokenResponse } from '@/types'
 
-const API_URL = `${process.env.NEXT_API_URL || 'https://backend01-mu.vercel.app'}/api`
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sammar20-todo-backend.hf.space'}/api`
 
 interface FetchOptions extends RequestInit {
   skipAuth?: boolean
